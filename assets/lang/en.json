@@ -1,0 +1,9 @@
+{
+  "AppName": "Reciply",
+  "NoInternet": "Can't connect .. check internet",
+  "Search": "Search",
+  "Cancel": "Cancel",
+  "Name": "Name",
+  "Description": "Description",
+  "Ingredients": "Ingredients"
+}
