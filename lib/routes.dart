@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reciply/presentation/bloc/recipes/recipes_cubit.dart';
 import 'package:reciply/presentation/screen/details_screen.dart';
+import 'package:reciply/presentation/screen/favorite_screen.dart';
 import 'package:reciply/presentation/screen/home_screen.dart';
+import 'package:reciply/utils/database_hepler.dart';
 import 'data/repository/recipe_repository.dart';
 import 'data/web_services/recipes_web_services.dart';
 import 'domain/recipe_model.dart';
@@ -13,13 +15,16 @@ class AppRouter {
   static const splashScreen = '/';
   static const homeScreen = '/home';
   static const detailsScreen = '/detailsScreen';
+  static const favoriteScreen = '/favoriteScreen';
 
   late RecipesRepository recipesRepository;
   late RecipesCubit recipesCubit;
+  late DatabaseHelper db;
 
   AppRouter() {
     recipesRepository = RecipesRepository(RecipesWebServices());
     recipesCubit = RecipesCubit(recipesRepository);
+    db = DatabaseHelper();
   }
 
   Route? generateRoute(RouteSettings settings) {
@@ -39,7 +44,11 @@ class AppRouter {
         final recipe = settings.arguments as RecipeModel;
 
         return MaterialPageRoute(
-          builder: (_) => DetailsScreen(recipe),
+          builder: (_) => DetailsScreen(recipe, db),
+        );
+      case favoriteScreen:
+        return MaterialPageRoute(
+          builder: (_) => FavoriteScreen(db: db),
         );
     }
   }

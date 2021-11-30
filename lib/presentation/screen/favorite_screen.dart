@@ -1,39 +1,32 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:reciply/constants/app_colors.dart';
-import 'package:reciply/constants/app_images.dart';
 import 'package:reciply/constants/localization_constains.dart';
 import 'package:reciply/domain/recipe_model.dart';
-import 'package:reciply/presentation/bloc/recipes/recipes_cubit.dart';
 import 'package:reciply/presentation/widgets/loading.dart';
 import 'package:reciply/presentation/widgets/no_internet_widget.dart';
 import 'package:reciply/presentation/widgets/text_display.dart';
 import 'package:reciply/presentation/widgets/text_field_display.dart';
-import 'package:reciply/utils/navigator.dart';
+import 'package:reciply/utils/database_hepler.dart';
 
 import '../../routes.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class FavoriteScreen extends StatefulWidget {
+  final DatabaseHelper db;
+
+  const FavoriteScreen({Key? key, required this.db}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<FavoriteScreen> createState() => _FavoriteScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _FavoriteScreenState extends State<FavoriteScreen> {
   bool _isSearching = false;
   final _searchTextController = TextEditingController();
   List<RecipeModel> recipesList = [];
   List<RecipeModel> searchedRecipes = [];
-
-  @override
-  void initState() {
-    BlocProvider.of<RecipesCubit>(context).getRecipes();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: AppColor.lightGrey,
       appBar: AppBar(
         backgroundColor: AppColor.lightGrey,
-        leading: _isSearching
-            ? const BackButton(color: AppColor.red)
-            : IconButton(
-                icon: const Icon(Icons.favorite, color: AppColor.brown),
-                onPressed: () => pushName(context, AppRouter.favoriteScreen),
-              ),
+        leading: const BackButton(color: AppColor.brown),
         title: _isSearching ? _buildSearchField() : _buildAppBarTitle(),
         actions: _buildAppBarActions(),
       ),
@@ -58,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ) {
           final bool connected = connectivity != ConnectivityResult.none;
           if (connected) {
-            return buildBlocWidget();
+            return buildFutureWidget();
           } else {
             return const NoInternetWidget();
           }
@@ -68,24 +56,26 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildBlocWidget() {
-    return BlocBuilder<RecipesCubit, RecipesState>(
-      builder: (context, state) {
-        if (state is RecipesSuccess) {
-          recipesList = (state).recipes;
-          return buildRecipeList();
-        } else {
+  Widget buildFutureWidget() {
+    return FutureBuilder<List<RecipeModel>>(
+      future: widget.db.getAllRecipe(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) print(snapshot.error);
+        var data = snapshot.data;
+        if (!snapshot.hasData || data == null) {
           return LoadingWidget();
         }
+        recipesList = data;
+        return buildRecipeList();
       },
     );
   }
 
   Widget _buildAppBarTitle() => Center(
         child: AppTextDisplay(
-          translation: kAppName,
-          fontFamily: "Pacifico",
+          translation: kFavorites,
           color: AppColor.brown,
+          fontWeight: FontWeight.w600,
         ),
       );
 
@@ -112,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Center(
                 child: AppTextDisplay(
               translation: kCancel,
-              color: AppColor.red,
+              color: AppColor.brown,
               fontSize: 14,
             )),
           ),
@@ -175,56 +165,56 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget recipeItem(RecipeModel character) {
+  Widget recipeItem(RecipeModel recipe) {
     return InkWell(
       onTap: () => Navigator.pushNamed(context, AppRouter.detailsScreen,
-          arguments: character),
+          arguments: recipe),
       child: _searchTextController.text.isEmpty
-          ? defaultCharacterItem(character)
-          : searchedCharacterItem(character),
+          ? defaultRecipeItem(recipe)
+          : searchedRecipeItem(recipe),
     );
   }
 
-  Widget defaultCharacterItem(RecipeModel character) {
+  Widget defaultRecipeItem(RecipeModel recipe) {
     return Stack(alignment: Alignment.bottomLeft, children: [
-      cachedNetworkImage(character),
+      cachedNetworkImage(recipe),
       Container(
         color: AppColor.white,
         padding: const EdgeInsets.all(16),
         child: AppTextDisplay(
-          text: character.name,
+          text: recipe.name,
           color: AppColor.black,
         ),
       ),
     ]);
   }
 
-  Widget cachedNetworkImage(RecipeModel character) {
-    if (character.image == null) {
+  Widget cachedNetworkImage(RecipeModel recipe) {
+    if (recipe.image == null) {
       return const Icon(Icons.error);
     } else {
       return Hero(
-        tag: character.id!,
+        tag: recipe.id!,
         child: CachedNetworkImage(
           width: double.infinity,
           placeholder: (context, url) => LoadingWidget(),
           errorWidget: (context, url, error) => const Icon(Icons.error),
-          imageUrl: character.image!,
+          imageUrl: recipe.image!,
           fit: BoxFit.cover,
         ),
       );
     }
   }
 
-  Widget searchedCharacterItem(RecipeModel character) {
+  Widget searchedRecipeItem(RecipeModel recipe) {
     return SizedBox(
       height: ScreenUtil().setHeight(60),
       child: Row(
         children: [
           SizedBox(
               width: ScreenUtil().setWidth(60),
-              child: cachedNetworkImage(character)),
-          Expanded(child: AppTextDisplay(text: character.name))
+              child: cachedNetworkImage(recipe)),
+          Expanded(child: AppTextDisplay(text: recipe.name))
         ],
       ),
     );
