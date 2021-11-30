@@ -5,3 +5,4 @@ const kCancel = 'Cancel';
 const kName = 'Name';
 const kDescription = 'Description';
 const kIngredients = 'Ingredients';
+const kFavorites = 'Favorites';

@@ -18,7 +18,6 @@ class RecipesWebServices {
   Future<dynamic> getRecipes() async {
     try {
       Response response = await dio.get('43427003d33f1f6b51cc');
-      print(response.data.toString());
       return response;
     } catch (e) {
       print(e.toString());

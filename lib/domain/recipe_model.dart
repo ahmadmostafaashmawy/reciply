@@ -75,28 +75,29 @@ class RecipeModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "fats": fats,
-        "name": name,
-        "time": time,
-        "image": image,
+        if (id != null) "id": id,
+        if (fats != null) "fats": fats,
+        if (name != null) "name": name,
+        if (time != null) "time": time,
+        if (image != null) "image": image,
         if (weeks != null) "weeks": List<String>.from(weeks!.map((x) => x)),
-        "carbos": carbos,
-        "fibers": fibers,
-        "rating": rating,
-        "country": country,
-        "ratings": ratings,
-        "calories": calories,
-        "headline": headline,
+        if (carbos != null) "carbos": carbos,
+        if (fibers != null) "fibers": fibers,
+        if (rating != null) "rating": rating,
+        if (country != null) "country": country,
+        if (ratings != null) "ratings": ratings,
+        if (calories != null) "calories": calories,
+        if (headline != null) "headline": headline,
         if (keywords != null)
           "keywords": List<String>.from(keywords!.map((x) => x)),
         if (products != null)
-          "products": List<String>.from(products!.map((x) => x)),
-        "proteins": proteins,
-        "favorites": favorites,
-        "difficulty": difficulty,
-        "description": description,
-        "highlighted": highlighted,
+          if (products != null)
+            "products": List<String>.from(products!.map((x) => x)),
+        if (proteins != null) "proteins": proteins,
+        if (favorites != null) "favorites": favorites,
+        if (difficulty != null) "difficulty": difficulty,
+        if (description != null) "description": description,
+        if (highlighted != null) "highlighted": highlighted,
         if (ingredients != null)
           "ingredients": List<dynamic>.from(ingredients!.map((x) => x)),
         if (deliverableIngredients != null)
