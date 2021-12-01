@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
-      Navigator.pushReplacementNamed(context, AppRouter.homeScreen);
+      Navigator.pushReplacementNamed(context, AppRouter.loginScreen);
     });
   }
 

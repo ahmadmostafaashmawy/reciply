@@ -6,5 +6,11 @@
   "Name": "Name",
   "Description": "Description",
   "Ingredients": "Ingredients",
-  "Favorites": "Favorites"
+  "Favorites": "Favorites",
+  "CannotBeNull": "This Field Couldn't be Null",
+  "Email": "Email",
+  "Password": "Password",
+  "Login": "Login",
+  "ContinueAsGuest": "Continue as a guest",
+  "NotHaveAccount": "Do not have an account?"
 }

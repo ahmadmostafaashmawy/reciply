@@ -6,5 +6,11 @@
   "Name": "الاسم",
   "Description": "التعريف",
   "Ingredients": "المكونات",
-  "Favorites": "المفضلة"
+  "Favorites": "المفضلة",
+  "CannotBeNull": "لا يمكن أن يكون هذا الجزء فارغًا",
+  "Email": "ايميل",
+  "Password": "كلمة المرور",
+  "Login": "تسجيل دخول",
+  "ContinueAsGuest": "المتابعة كزائر",
+  "NotHaveAccount": "ليس لديك حساب؟"
 }

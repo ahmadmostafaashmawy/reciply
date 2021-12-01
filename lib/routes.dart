@@ -5,6 +5,7 @@ import 'package:reciply/presentation/bloc/recipes/recipes_cubit.dart';
 import 'package:reciply/presentation/screen/details_screen.dart';
 import 'package:reciply/presentation/screen/favorite_screen.dart';
 import 'package:reciply/presentation/screen/home_screen.dart';
+import 'package:reciply/presentation/screen/login_screen.dart';
 import 'package:reciply/utils/database_hepler.dart';
 import 'data/repository/recipe_repository.dart';
 import 'data/web_services/recipes_web_services.dart';
@@ -16,6 +17,7 @@ class AppRouter {
   static const homeScreen = '/home';
   static const detailsScreen = '/detailsScreen';
   static const favoriteScreen = '/favoriteScreen';
+  static const loginScreen = '/loginScreen';
 
   late RecipesRepository recipesRepository;
   late RecipesCubit recipesCubit;
@@ -31,6 +33,11 @@ class AppRouter {
     switch (settings.name) {
       case splashScreen:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
+
+      case loginScreen:
+        return MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        );
 
       case homeScreen:
         return MaterialPageRoute(
