@@ -12,3 +12,7 @@ const kPassword = 'Password';
 const kLogin = 'Login';
 const kContinueAsGuest = 'ContinueAsGuest';
 const kNotHaveAccount = 'NotHaveAccount';
+const kRequired = 'Required';
+const kPasswordLengthError = 'PasswordLengthError';
+const kNotValidEmail = 'NotValidEmail';
+const kAuthNotCorrect = 'AuthNotCorrect';

@@ -12,5 +12,9 @@
   "Password": "كلمة المرور",
   "Login": "تسجيل دخول",
   "ContinueAsGuest": "المتابعة كزائر",
-  "NotHaveAccount": "ليس لديك حساب؟"
+  "NotHaveAccount": "ليس لديك حساب؟",
+  "Required": "هذه الخانة مطلوبه",
+  "kPasswordLengthError": "الرجاء أكثر من 6 أحرف",
+  "NotValidEmail": "تنسيق بريد إلكتروني غير صالح",
+  "AuthNotCorrect": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
 }

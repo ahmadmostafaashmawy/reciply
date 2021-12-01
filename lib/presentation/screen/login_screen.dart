@@ -1,18 +1,17 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:reciply/constants/app_colors.dart';
-import 'package:reciply/constants/app_images.dart';
+import 'package:reciply/constants/constants.dart';
 import 'package:reciply/constants/localization_constains.dart';
+import 'package:reciply/presentation/widgets/background_scaffold.dart';
 import 'package:reciply/presentation/widgets/blur_edit_text.dart';
-import 'package:reciply/presentation/widgets/blur_widget.dart';
 import 'package:reciply/presentation/widgets/button_display.dart';
 import 'package:reciply/presentation/widgets/size.dart';
+import 'package:reciply/presentation/widgets/snak_bar.dart';
 import 'package:reciply/presentation/widgets/text_display.dart';
-import 'package:reciply/presentation/widgets/text_field_display.dart';
 import 'package:reciply/routes.dart';
+import 'package:reciply/utils/app_edit_validator.dart';
 import 'package:reciply/utils/navigator.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,9 +22,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   var formKey = GlobalKey<FormState>();
 
-  var phoneOrEmailController = TextEditingController();
+  var emailController = TextEditingController();
   bool emailIsNull = false;
 
   final passwordController = TextEditingController();
@@ -34,43 +35,43 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(overflow: Overflow.visible, children: [
-        Image.asset(
-          AppImages.background,
-          height: double.infinity,
-          fit: BoxFit.cover,
-        ),
-        BlurWidget(
-          sigmaX: 1.0,
-          sigmaY: 1.0,
-          child: SafeArea(child: buildBody(context)),
-        ),
-      ]),
+      key: _scaffoldKey,
+      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
+      body: BackgroundScaffold(
+        body: buildBody(context),
+      ),
     );
   }
 
   Widget buildBody(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16)),
+    return Container(
+      height: double.infinity,
+      padding: EdgeInsets.fromLTRB(0.1.sw, 0.17.sh, 0.1.sw, 0.3.sw),
       child: Form(
         key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            HeightBox(16),
-            buildILogo(context),
-            Column(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                buildUserEmail(),
+                buildILogo(context),
                 HeightBox(16),
-                buildUserPassword(),
+                Column(
+                  children: [
+                    buildUserEmail(),
+                    HeightBox(16),
+                    buildUserPassword(),
+                  ],
+                ),
+                HeightBox(16),
+                continueAsGuest(),
+                HeightBox(16),
+                buildLoginButton(context),
               ],
             ),
-            continueAsGuest(),
-            buildLoginButton(),
-            HeightBox(24),
-          ],
+          ),
         ),
       ),
     );
@@ -89,9 +90,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget buildUserEmail() {
     return BlurEditText(
-      controller: phoneOrEmailController,
+      controller: emailController,
       errorText: emailIsNull,
       translation: kEmail,
+      validator: (value) => validatorEmail(value, context),
     );
   }
 
@@ -100,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
       controller: passwordController,
       errorText: passwordIsNull,
       obscureText: true,
+      validator: (value) => validatorPasswordRequired(value, context),
       translation: kPassword,
     );
   }
@@ -115,25 +118,26 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildLoginButton() {
+  Widget buildLoginButton(BuildContext buildContext) {
     return AppButton(
       translation: kLogin,
-      textColor: AppColor.darkGrey,
+      borderColor: AppColor.brown,
+      textColor: AppColor.brown,
       onTap: () {
         if (formKey.currentState!.validate()) {
-          pushName(context, AppRouter.homeScreen);
+          if (emailController.text == adminEmail &&
+              passwordController.text == adminPassword) {
+            popAllAndPushName(context, AppRouter.homeScreen);
+          } else {
+            final snackBar = SnackBar(
+                content: AppTextDisplay(
+              translation: kAuthNotCorrect,
+              color: AppColor.white,
+            ));
+            _scaffoldKey.currentState!.showSnackBar(snackBar);
+          }
         }
       },
-    );
-  }
-
-  Widget buildGuestText() {
-    return InkWell(
-      onTap: () {},
-      child: AppTextDisplay(
-        translation: kContinueAsGuest,
-        color: AppColor.brown,
-      ),
     );
   }
 }

@@ -10,10 +10,12 @@ class BlurEditText extends StatelessWidget {
   final TextEditingController controller;
   final bool errorText;
   final bool obscureText;
+  final FormFieldValidator<String>? validator;
 
   BlurEditText({
     required this.translation,
     required this.controller,
+    required this.validator,
     this.errorText = false,
     this.obscureText = false,
   });
@@ -31,6 +33,8 @@ class BlurEditText extends StatelessWidget {
           translation: translation,
           errorText: errorText ? kCannotBeNull : null,
           hintColor: Colors.white,
+          textColor: AppColor.lightGrey,
+          validator: validator,
           maxLength: 50,
           borderColor: Colors.transparent,
           fontSize: 15,

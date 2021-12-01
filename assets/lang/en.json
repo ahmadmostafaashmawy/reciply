@@ -12,5 +12,9 @@
   "Password": "Password",
   "Login": "Login",
   "ContinueAsGuest": "Continue as a guest",
-  "NotHaveAccount": "Do not have an account?"
+  "NotHaveAccount": "Do not have an account?",
+  "Required": "This field is Required",
+  "kPasswordLengthError": "Please more than 6 characters",
+  "NotValidEmail": "Not Valid Email Format",
+  "AuthNotCorrect": "Email or password isn't correct"
 }
